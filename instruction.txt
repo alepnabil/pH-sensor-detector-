@@ -1,0 +1,26 @@
+nasm -f win32 led.asm -l led.lst
+
+
+ld --disable-reloc-section -m i386pe -o led.pe -T link.x led.obj
+
+objcopy -O elf32-i386 led.pe led.elf
+
+openocd -f /ucrt64/share/openocd/scripts/interface/ftdi/olimex-arm-usb-ocd-h.cfg -f /ucrt64/share/openocd/scripts/board/quark_x10xx_board.cfg
+
+
+
+--gdb--
+
+target remote localhost:3333
+
+monitor halt
+
+file led2.elf
+
+
+load
+
+monitor reg eip 0xe3ac0f0
+
+
+continue
